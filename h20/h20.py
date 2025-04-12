@@ -1,18 +1,22 @@
 import tkinter as tk
 from tkinter import ttk
 import sqlite3
+import subprocess
 
 #Funktsioon, mis laadib andmed SQLite andmebaasist ja sisestab need Treeview tabelisse
-def load_data_from_db(tree):
+def load_data_from_db(tree, search_query=""):
+    for item in tree.get_children():
+        tree.delete(item)
     # Loo ühendus SQLite andmebaasiga
     conn = sqlite3.connect('.\kplaas.db')
     cursor = conn.cursor()
 
     # Tee päring andmebaasist andmete toomiseks
     if search_query:
-        cursor.execute("SELECT id, eesnimi, perenimi, email, tel, profiilipilt FROM users WHERE title LIKE ?", ('%' + search_query + '%',))
+        cursor.execute("SELECT id, eesnimi, perenimi, email, tel, profiilipilt FROM users WHERE eesnimi LIKE ?", ('%' + search_query + '%',))
     else:
-cursor.execute("SELECT id, eesnimi, perenimi, email, tel, profiilipilt FROM users")
+        cursor.execute("SELECT id, eesnimi, perenimi, email, tel, profiilipilt FROM users")
+
     rows = cursor.fetchall()
 
 
@@ -23,8 +27,38 @@ cursor.execute("SELECT id, eesnimi, perenimi, email, tel, profiilipilt FROM user
     # Sulge ühendus andmebaasiga
     conn.close()
 
+
+
+def on_search():
+    search_query = search_entry.get()
+    load_data_from_db(tree, search_query)
+
+
+
+def add_data():
+    subprocess.run(["python", ".\h19\h19.py"])
+
+
 root = tk.Tk()
 root.title("Kasutaja andmete kuvamine")
+
+
+search_frame = tk.Frame(root)
+search_frame.pack(pady=10)
+
+search_label = tk.Label(search_frame, text="Otsi eesnime järgi:")
+search_label.pack(side=tk.LEFT)
+
+search_entry = tk.Entry(search_frame)
+search_entry.pack(side=tk.LEFT, padx=10)
+
+search_button = tk.Button(search_frame, text="Otsi", command=on_search)
+search_button.pack(side=tk.LEFT)
+
+
+# avab h19.py
+open_button = tk.Button(root, text="Lisa andmeid", command=add_data)
+open_button.pack(pady=20)
 
 
 # Loo raam kerimisribaga
