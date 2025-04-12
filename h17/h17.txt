@@ -1,0 +1,43 @@
+!!Leia külalised, kes on broneerinud rohkem kui ühe toa erinevatel perioodidel.!!
+
+SELECT count(users_id), users.eesnimi, users.perenimi
+FROM bookings
+INNER JOIN users ON bookings.users_id = users.id
+GROUP BY users_id
+HAVING count(users_id) > 2
+;
+
+
+
+!!Loe kokku broneeritud toad ja nende eest makstud summad, kasutades COUNT() ja SUM() funktsioone.!!
+
+SELECT COUNT(rooms_id) AS Kordus, SUM(payments.arve_summa) AS Summa, users.eesnimi, users.perenimi
+FROM bookings
+INNER JOIN users ON users.id = bookings.users_id
+INNER JOIN payments on payments.id = bookings.id
+GROUP BY users_id
+;
+
+
+
+!!Kasuta GROUP BY külalise ID järgi, et grupeerida tulemused külaliste kaupa.!!
+
+SELECT COUNT(rooms_id) AS kordus, users.eesnimi, users.perenimi
+FROM bookings
+INNER JOIN users ON users.id = bookings.users_id
+GROUP BY users_id
+;
+
+
+
+!!Kasuta alampäringut, et leida külalised, kellel on mitu broneeringut erinevatel perioodidel.!!
+
+SELECT count(users_id)
+FROM bookings
+WHERE users_id IN (
+	SELECT users_id
+	FROM bookings
+	GROUP BY users_id
+	HAVING count(users_id) > 2
+)
+GROUP BY users_id;

@@ -1,0 +1,7 @@
+INSERT INTO users (first_name, last_name, email, phone, image) VALUES 
+('Kaspar', 'Plaas', 'kaspar.plaas@gmail.com', '54664204', 'kaspar.jpg'),
+('Mario', 'Metshein', 'metshein@hkhk.edu.ee', '54664204', 'mario.jpg');
+
+
+.read
+ users.sql

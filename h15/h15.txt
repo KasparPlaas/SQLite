@@ -1,0 +1,5 @@
+		
+UPDATE users
+SET email = 'muudetud@gmail.com', phone = 123
+WHERE first_name = 'Kaspar';
+DELETE FROM users WHERE id >= 5 AND id <= 10; 

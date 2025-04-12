@@ -1,0 +1,72 @@
+.open kplaas.db
+
+
+CREATE TABLE users(
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+eesnimi TEXT NOT NULL,
+perenimi TEXT NOT NULL,
+email TEXT NOT NULL,
+tel TEXT NOT NULL,
+profiilipilt TEXT NOT NULL
+);
+
+
+
+CREATE TABLE bookings(
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+users_id INTEGER,
+rooms_id INTEGER,
+saabumine TEXT NOT NULL,
+lahkumine TEXT NOT NULL,
+FOREIGN KEY (users_id) REFERENCES users(id),
+FOREIGN KEY (rooms_id) REFERENCES rooms(id)
+);
+
+
+
+CREATE TABLE rooms(
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+toa_number TEXT NOT NULL,
+toa_tyyp TEXT NOT NULL,
+toa_hind INTEGER NOT NULL,
+toa_saadavus TEXT NOT NULL
+);
+
+
+
+CREATE TABLE payments(
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+bookings_id INTEGER,
+arve_summa TEXT NOT NULL,
+tasumis_paev TEXT NOT NULL,
+makseviis TEXT NOT NULL,
+FOREIGN KEY (bookings_id) REFERENCES bookings(id)
+);
+
+
+
+.read users2.sql
+.read bookings.sql
+.read payments.sql
+.read rooms.sql
+
+
+
+select users.eesnimi, users.perenimi, rooms.toa_number, rooms.toa_tyyp
+FROM bookings
+INNER JOIN users ON bookings.users_id = users.id
+INNER JOIN rooms ON bookings.rooms_id= rooms.id;
+
+
+
+select payments.tasumis_paev, payments.arve_summa
+FROM bookings
+INNER JOIN payments ON bookings.id = payments.id;
+
+
+
+select users.eesnimi, users.perenimi, rooms.toa_tyyp, rooms.toa_hind, bookings.saabumine, bookings.lahkumine, payments.arve_summa, payments.tasumis_paev, payments.makseviis
+FROM bookings
+INNER JOIN users ON bookings.users_id = users.id
+INNER JOIN rooms ON bookings.rooms_id = rooms.id
+INNER JOIN payments ON bookings.users_id = payments.id; 
